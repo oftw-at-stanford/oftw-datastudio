@@ -9,7 +9,7 @@ console.log('Data Studio Scraper');
 
 async function savePledges() {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: process.env.HEADLESS === "true",
     userDataDir: './chrome_data',
   });
   try {
