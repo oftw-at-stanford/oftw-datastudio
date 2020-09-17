@@ -9,7 +9,7 @@ console.log('Data Studio Scraper');
 
 async function savePledges() {
   const browser = await puppeteer.launch({
-    headless: process.env.HEADLESS === "true",
+    headless: process.env.HEADLESS === 'true',
     userDataDir: './chrome_data',
   });
   try {
@@ -44,28 +44,37 @@ async function savePledges() {
       }
 
       return rows.map(row => {
-        const children = row.childNodes;
+        const children = Array.from(row.childNodes);
 
         if (children.length !== 15) {
           throw new Error('New fields added?');
         }
 
-        return {
-          school: children[1].textContent,
-          class: children[2].textContent,
-          firstName: children[3].textContent,
-          lastName: children[4].textContent,
-          email: children[5].textContent,
-          pledgeDate: children[6].textContent,
-          startDate: children[7].textContent,
-          endDate: children[8].textContent,
-          status: children[9].textContent,
-          postGradStartDelay: children[10].textContent,
-          amount: children[11].textContent,
-          frequency: children[12].textContent,
-          portfolio: children[13].textContent,
-          annualRunRate: children[14].textContent,
-        };
+        const fields = [
+          'school',
+          'pledgeDate',
+          'class',
+          'startDate',
+          'postGradStartDelay',
+          'endDate',
+          'status',
+          'amount',
+          'frequency',
+          'portfolio',
+          'annualRunRate',
+          'firstName',
+          'lastName',
+          'email',
+        ];
+
+        const out: any = {};
+
+        for (let i = 0; i < fields.length; i++) {
+          // Skip [0] which is the number
+          out[fields[i]] = children[i + 1].textContent;
+        }
+
+        return out;
       });
     });
 
@@ -97,6 +106,11 @@ async function calculateStatistics() {
   const antimalarialTreatments =
     yearlyDollarsPledged * DOLLARS_TO_ANTIMALARIAL_TREATMENTS;
   const bednets = yearlyDollarsPledged * DOLLARS_TO_BEDNETS;
+
+  // Sanity check: numbers shouldn't be NaN
+  if (Number.isNaN(bednets) || Number.isNaN(antimalarialTreatments)) {
+    throw new Error("Parse error, numbers shouldn't be NaN");
+  }
 
   console.log('Yearly $ pledged:', yearlyDollarsPledged);
   console.log('Antimalarial treatments:', antimalarialTreatments);
@@ -154,7 +168,7 @@ async function updateRepo(stats: Stats) {
 (async () => {
   await savePledges();
   const stats = await calculateStatistics();
-  await updateRepo(stats);
+  // await updateRepo(stats);
 })().catch(e => {
   console.error(e);
   process.exit(1);
