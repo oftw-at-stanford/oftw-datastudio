@@ -168,7 +168,11 @@ async function updateRepo(stats: Stats) {
 (async () => {
   await savePledges();
   const stats = await calculateStatistics();
-  // await updateRepo(stats);
+  if (process.env.UPDATE_REPO) {
+    await updateRepo(stats);
+  } else {
+    console.log('Skipping repo update');
+  }
 })().catch(e => {
   console.error(e);
   process.exit(1);
