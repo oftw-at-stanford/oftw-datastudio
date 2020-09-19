@@ -5,6 +5,13 @@ import {execSync, spawnSync} from 'child_process';
 import {chdir} from 'process';
 import * as config from '../config.json';
 
+// https://github.com/puppeteer/puppeteer/issues/6214
+declare module 'puppeteer' {
+  export interface Page {
+    waitForTimeout(duration: number): Promise<void>;
+  }
+}
+
 console.log('Data Studio Scraper');
 
 async function savePledges() {
@@ -26,7 +33,7 @@ async function savePledges() {
       "[placeholder='Type to search'] input",
       'Stanford University (UG)'
     );
-    await page.waitFor(2000);
+    await page.waitForTimeout(2000);
     await page.$eval('.only', el => (el as any).click());
 
     // Wait for page to reload
@@ -50,6 +57,8 @@ async function savePledges() {
           throw new Error('New fields added?');
         }
 
+        // Dynamically map columns to field names
+        // This seems to be necessary because the columns change order??
         const fields: {
           [col: string]: string;
         } = {
