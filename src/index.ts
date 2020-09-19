@@ -145,6 +145,14 @@ async function updateRepo(stats: Stats) {
 
   execSync('git pull');
 
+  const dollarFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+  const numberFormatter = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 0,
+  });
+
   // Replace in file
   // Yes, I commit the cardinal sin.
   writeFileSync(
@@ -153,21 +161,27 @@ async function updateRepo(stats: Stats) {
       .toString()
       .replace(
         /<span data-stat="pledgees">(?:.+)<\/span>/g,
-        `<span data-stat="pledgees">${stats.pledgees}</span>`
+        `<span data-stat="pledgees">${numberFormatter.format(
+          stats.pledgees
+        )}</span>`
       )
       .replace(
         /<span data-stat="antimalarialTreatments">(?:.+)<\/span>/g,
-        `<span data-stat="antimalarialTreatments">${stats.antimalarialTreatments.toFixed(
-          0
+        `<span data-stat="antimalarialTreatments">${numberFormatter.format(
+          stats.antimalarialTreatments
         )}</span>`
       )
       .replace(
         /<span data-stat="bednets">(?:.+)<\/span>/g,
-        `<span data-stat="bednets">${stats.bednets.toFixed(0)}</span>`
+        `<span data-stat="bednets">${numberFormatter.format(
+          stats.bednets
+        )}</span>`
       )
       .replace(
         /<span data-stat="yearlyDollarsPledged">(?:.+)<\/span>/g,
-        `<span data-stat="yearlyDollarsPledged">${stats.yearlyDollarsPledged}</span>`
+        `<span data-stat="yearlyDollarsPledged">${dollarFormatter.format(
+          stats.yearlyDollarsPledged
+        )}</span>`
       )
   );
 
