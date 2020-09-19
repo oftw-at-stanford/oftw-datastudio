@@ -50,28 +50,35 @@ async function savePledges() {
           throw new Error('New fields added?');
         }
 
-        const fields = [
-          'school',
-          'pledgeDate',
-          'class',
-          'startDate',
-          'postGradStartDelay',
-          'endDate',
-          'status',
-          'amount',
-          'frequency',
-          'portfolio',
-          'annualRunRate',
-          'firstName',
-          'lastName',
-          'email',
-        ];
+        const fields: {
+          [col: string]: string;
+        } = {
+          School: 'school',
+          'Pledge Date': 'pledgeDate',
+          Class: 'class',
+          'Start Date': 'startDate',
+          'Post-Grad Start Delay (Months)': 'postGradStartDelay',
+          'End Date': 'endDate',
+          Status: 'status',
+          Amount: 'amount',
+          Frequency: 'frequency',
+          Portfolio: 'portfolio',
+          'Annual Run Rate': 'annualRunRate',
+          'First Name': 'firstName',
+          'Last Name': 'lastName',
+          Email: 'email',
+        };
+
+        const columns = Array.from(document.querySelectorAll('.colName')).map(
+          el => el.textContent!
+        );
 
         const out: any = {};
 
-        for (let i = 0; i < fields.length; i++) {
+        for (let i = 1; i < children.length; i++) {
+          const fieldName = fields[columns[i]];
           // Skip [0] which is the number
-          out[fields[i]] = children[i + 1].textContent;
+          out[fieldName] = children[i].textContent;
         }
 
         return out;
