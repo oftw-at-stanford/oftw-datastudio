@@ -4,6 +4,17 @@ import * as config from "../config.json";
 import { Contact } from "./entity/Contact";
 import { Pledgees } from "./save-pledges";
 
+const EXEC_EMAILS = [
+  "emma123@stanford.edu",
+  "jchen@stanford.edu",
+  "kjblanks@stanford.edu",
+  "stancao@stanford.edu",
+  "liuk@stanford.edu",
+  "kcarolyn@stanford.edu",
+  "kyoon17@stanford.edu",
+  "laurageq@stanford.edu",
+];
+
 const { user, host, pass } = config.email;
 
 async function sendOnboardingMail(to: string) {
@@ -21,6 +32,7 @@ async function sendOnboardingMail(to: string) {
   return await account.sendMail({
     from: "OFTW Team <" + user + ">",
     to,
+    cc: EXEC_EMAILS,
     subject: "OFTW next steps",
     text: `Hello!
 
@@ -30,8 +42,11 @@ Thanks so much for taking the pledge for One for the World @ Stanford! To finali
   });
 }
 
-export default async function sendOnboarding(contactsRepo: Repository<Contact>, currentPledgees: Pledgees) {
-  const contacts = (await contactsRepo.find()).map(c => c.email);
+export default async function sendOnboarding(
+  contactsRepo: Repository<Contact>,
+  currentPledgees: Pledgees
+) {
+  const contacts = (await contactsRepo.find()).map((c) => c.email);
 
   for (const { email } of currentPledgees) {
     if (!contacts.includes(email)) {
