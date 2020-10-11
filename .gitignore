@@ -117,3 +117,4 @@ dist
 /build
 /config.json
 /stanford-1ftw
+/db.sqlite3
