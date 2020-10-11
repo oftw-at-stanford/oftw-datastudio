@@ -1,7 +1,13 @@
 import puppeteer from "puppeteer";
 import * as config from '../config.json';
 
-export default async function savePledges() {
+// There are mor properties than this, we just don't use them
+export type Pledgees = {
+  annualRunRate: string,
+  email: string;
+}[];
+
+export default async function savePledges(): Promise<Pledgees> {
   const browser = await puppeteer.launch({
     headless: process.env.HEADLESS === 'true',
     userDataDir: './chrome_data',

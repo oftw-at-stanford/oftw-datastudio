@@ -1,6 +1,8 @@
 import * as process from 'process';
 import "reflect-metadata";
 import { createConnection } from 'typeorm';
+import { Contact } from './entity/Contact';
+import sendOnboarding from './onboarding-mail';
 import savePledges from './save-pledges';
 import calculateStatistics from './statistics';
 import { updateRepo } from './update-repo';
@@ -20,6 +22,9 @@ declare module 'puppeteer' {
   
   const data = await savePledges();
   const stats = await calculateStatistics(data);
+
+  const contactRepo = dbConn.getRepository(Contact);
+  await sendOnboarding(contactRepo, data);
 
   if (process.env.UPDATE_REPO) {
     await updateRepo(stats);
