@@ -5,8 +5,8 @@ export type Stats = {
   bednets: number;
 };
 
-const DOLLARS_TO_ANTIMALARIAL_TREATMENTS = 1765 / 5000;
-const DOLLARS_TO_BEDNETS = 2771 / 5000;
+const DOLLARS_TO_ANTIMALARIAL_TREATMENTS = 1765 / 5000 / 12;
+const DOLLARS_TO_BEDNETS = 2771 / 5000 / 12;
 
 /**
  * Calculates statistics (e.g. antimalarial treatments, bednets) from the raw
