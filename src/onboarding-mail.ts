@@ -1,3 +1,5 @@
+// Sends onboarding emails, with all exec members cc'd
+
 import * as nodemailer from "nodemailer";
 import { Repository } from "typeorm";
 import * as config from "../config.json";

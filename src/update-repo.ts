@@ -1,26 +1,31 @@
-import {writeFileSync, readFileSync} from 'fs';
-import {execSync, spawnSync} from 'child_process';
-import {chdir} from 'process';
-import { Stats } from './statistics';
+import { writeFileSync, readFileSync } from "fs";
+import { execSync, spawnSync } from "child_process";
+import { chdir } from "process";
+import { Stats } from "./statistics";
 
+/**
+ * Updates the repo, doing a git pull, a commit, and a git push.
+ *
+ * @param stats calculated statistics
+ */
 export async function updateRepo(stats: Stats) {
-  chdir('./stanford-1ftw');
+  chdir("./stanford-1ftw");
 
-  execSync('git pull');
+  execSync("git pull");
 
-  const dollarFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  const dollarFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
   });
-  const numberFormatter = new Intl.NumberFormat('en-US', {
+  const numberFormatter = new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 0,
   });
 
   // Replace in file
   // Yes, I commit the cardinal sin.
   writeFileSync(
-    'layouts/index.html',
-    readFileSync('layouts/index.html')
+    "layouts/index.html",
+    readFileSync("layouts/index.html")
       .toString()
       .replace(
         /<span data-stat="pledgees">(?:.+)<\/span>/g,
@@ -48,12 +53,12 @@ export async function updateRepo(stats: Stats) {
       )
   );
 
-  if (spawnSync('git', ['diff', '--quiet']).status !== 0) {
-    console.log('Modified content detected.');
+  if (spawnSync("git", ["diff", "--quiet"]).status !== 0) {
+    console.log("Modified content detected.");
 
     execSync('git commit -am "Automated statistics update"');
-    execSync('git push');
+    execSync("git push");
   } else {
-    console.log('No modifications made, exiting');
+    console.log("No modifications made, exiting");
   }
 }
